@@ -50,42 +50,8 @@ docker pull bugazelle/web-visual-testing
        -v $(pwd):/tmp \
        bugazelle/web-visual-testing
    ```
-   
-2. Support Jenkins
 
-   Run as a jenkins slave/agent. Available environments parameters:
-   
-   **JENKINS_MASTER_URL**: Master url of the jenkins, default: http://127.0.0.1:8080
-   
-   **JENKINS_SLAVE_KEY**: Something like: bb23de4d485447d3f8b73aefa268e687d5660dad553eb4534ff2ae369d7849c6
-   
-   **JENKINS_SLAVE_NAME**: Jenkins slave name
-   
-   **JENKINS_AGENT_WORKDIR**: Jenkins agent home, default: /home/jenkins
-   
-   3 Ways to connect jenkins master, for example:
-   
-   - Suggested: `jenkins-run.sh`
-   
-   - `jenkins-agent -url ${JENKINS_MASTER_URL} ${JENKINS_SLAVE_KEY} ${JENKINS_SLAVE_NAME}`
-   
-   - `java -jar /usr/share/jenkins/agent.jar -jnlpUrl ${JENKINS_MASTER_URL}/computer/slave1/slave-agent.jnlp -secret ${JENKINS_SLAVE_KEY}`
-   
-   ``` 
-   docker run \
-       -e VNC_RESOLUTION=1400x900 \
-       -p 6901:6901 \
-       -p 5901:5901 \
-       -v $(pwd):/tmp \
-       -e JENKINS_MASTER_URL=http://172.17.0.1:8080 \
-       -e JENKINS_SLAVE_KEY=1f27b72ec9cf59711788e8de7d1219766381c1ea0406b5f64de3bb6dcd6df913 \
-       -e JENKINS_SLAVE_NAME=slave1 \
-       bugazelle/web-visual-testing jenkins-run.sh
-   ```
-   
-   If you would like to setup a jenkins ci/cd environment by docker, more info here: [jenkins/README.md](jenkins/README.md)
-   
-3. Support CNTLM
+2. Support CNTLM
 
    If behind the NTLM proxy, use the CNTLM. Get more info here: [https://linux.die.net/man/1/cntlm](https://linux.die.net/man/1/cntlm)
    
