@@ -3,90 +3,14 @@
 Pull the docker image from: 
 
 ```
-docker pull bugazelle/web-visual-testing
+docker pull juanwangak/vnc-nightwatch
 ```
 
-![](noVNC_Sample.gif)
-
 ## Content
-- [Support Visual Testing Lib](#support-visual-testing-lib)
-- [Highlight: NoVNC, Jenkins, CNTLM](#highlight)
 - [How To Run](#how-to-run)
-- [BackstopJS Samples](#backstopjs-samples)
-- [Gemini Samples](#gemini-samples)
-- [Hermione Samples](#hermione-samples)
 - [System Info](#system-info)
 - [Useful Links](#useful-links)
 
-## Support Visual Testing Lib
-
-1. [BackstopJS: 4.3.2](https://github.com/garris/BackstopJS)
-2. [Gemini: 7.5.1](https://github.com/gemini-testing/gemini)
-3. [Hermione: 2.13.1](https://github.com/gemini-testing/hermione)
-
-> Chrome/ChromeDriver: 77.0.3865.120/77.0.3865.40, Firefox/Geckodriver: 69.0.3/0.26.0, Selenium Sever: 3.9.1
-> - If you would like to require a certain version of chrome/chromedirver, firefox/geckodriver and selenium server, please raise a issue. I will build the image for you.
-
-## Highlight
-1. Support noVNC
-   
-   Allow you to debug/watch the test running in a more "visual" way at: [http://127.0.0.1:6901/?password=vncpassword](http://127.0.0.1:6901/?password=vncpassword)
-   
-   For more info about noVNC: [docker-headless-vnc-container](https://github.com/Bugazelle/docker-headless-vnc-container)
-     
-   **-e VNC_RESOLUTION=1400x900**: set screen resolution to 1400x900
-   
-   **-p 6901:6901**: map vnc client port
-   
-   **-p 5901:5901**: map vnc server port
-   
-   **-v $(pwd):/tmp**: map files from current folder to container /tmp
-   
-   ```
-   docker run \
-       -e VNC_RESOLUTION=1400x900 \
-       -p 6901:6901 \
-       -p 5901:5901 \
-       -v $(pwd):/tmp \
-       bugazelle/web-visual-testing
-   ```
-
-2. Support CNTLM
-
-   If behind the NTLM proxy, use the CNTLM. Get more info here: [https://linux.die.net/man/1/cntlm](https://linux.die.net/man/1/cntlm)
-   
-   Available environments parameters:
-   
-   **CNTLM_PROXY_DOMAIN**: default: global
-   
-   **CNTLM_PROXY_AUTH**: default: NTLMv2
-   
-   **CNTLM_PROXY_USER**: no default, please see the configuration in cntlm.conf.tmpl
-   
-   **CNTLM_PROXY_KEY**: no default, please see the configuration in cntlm.conf.tmpl. Use `cntlm -u YourUserName -H` to get the key.
-   
-   **CNTLM_PROXY_SERVER**: no default, please see the configuration in cntlm.conf.tmpl. And you could add more proxy server by: CNTLM_PROXY_SERVER_1, CNTLM_PROXY_SERVER_2, CNTLM_PROXY_SERVER_3, CNTLM_PROXY_SERVER_4, CNTLM_PROXY_SERVER_5
-   
-   **CNTLM_NO_PROXY**: please see the configuration in cntlm.conf.tmpl. default: localhost, 127.0.0.*, 10.*, 192.168.*, 172.17.*
-   
-   **How to run**: `cntlm-run.sh`, then the proxy should be ready at local: [http://127.0.0.1:3128](http://127.0.0.1:3128)
- 
-   ```
-   docker run \
-       -e VNC_RESOLUTION=1400x900 \
-       -p 6901:6901 \
-       -p 5901:5901 \
-       -v $(pwd):/tmp \
-       -e CNTLM_PROXY_DOMAIN=global \
-       -e CNTLM_PROXY_AUTH=NTLMv2 \
-       -e CNTLM_PROXY_USER=YourUserName \
-       -e CNTLM_PROXY_KEY=YourKey \
-       -e CNTLM_PROXY_SERVER=TheProxyServer, like my.proxy:3128 \
-       bugazelle/web-visual-testing /bin/bash -c "cntlm-run.sh; \
-          export http_proxy=http://127.0.0.1:3128; \
-          export https_proxy=http://127.0.0.1:3128; \
-          wget --no-check-certificate http://apache.org; "
-   ```
    
 ## How To Run
 
@@ -97,15 +21,15 @@ docker pull bugazelle/web-visual-testing
       > Note: Sometimes the chromedriver, geckdriver running failed at container, add `--privileged -v /dev/shm:/dev/shm --shm-size 2048m` to solve the issue
    
        ``` 
-       docker run \
-           -e VNC_RESOLUTION=1400x900 \
-           -p 6901:6901 \
-           -p 5901:5901 \
-           -v $(pwd):/tmp \
-           --privileged \
-           -v /dev/shm:/dev/shm \
-           --shm-size 2048m \
-           bugazelle/web-visual-testing
+       docker run \          
+         -e VNC_RESOLUTION=1600x1000 \
+         -p 6901:6901 \
+         -p 5901:5901 \
+         --privileged \
+         -v $(pwd):/tmp \
+         -v /dev/shm:/dev/shm \
+         --shm-size 2048m \
+         juanwangak/vnc-nightwatch:1.0
        ```
    
    2) Access the [http://localhost:6901/?password=vncpassword/](http://localhost:6901/?password=vncpassword/) to the vnc env.
@@ -114,57 +38,9 @@ docker pull bugazelle/web-visual-testing
    
        ``` 
        cd /tmp;
-       ls -l;
-       cd samples/BackstopJS/Chrome/BackstopJS_PuppeteerEngine_SimulateCookie_UserActions;
-       backstop reference;
+       nightwatch
        ```
 
-2. Run Directly
-
-   ``` 
-   docker run \
-       -e VNC_RESOLUTION=1400x900 \
-       -p 6901:6901 \
-       -p 5901:5901 \
-       -v $(pwd):/tmp \
-       --privileged \
-       -v /dev/shm:/dev/shm \
-       --shm-size 2048m \
-       bugazelle/web-visual-testing \
-           /bin/bash -c "cd /tmp/samples/BackstopJS/Chrome/BackstopJS_PuppeteerEngine_SimulateCookie_UserActions; \
-           backstop reference;"
-    ```
-
-## BackstopJS Samples
-   
-   - [Chrome - Simulate Cookie & User Actions](samples/BackstopJS/Chrome/BackstopJS_PuppeteerEngine_SimulateCookie_UserActions)
-   - [Chrome - Simulate Devices](samples/BackstopJS/Chrome/BackstopJS_PuppeteerEngine_SimulateDevices)
-   - **Firefox**: Backstop does not support the firefox well, see the [issue-311](https://github.com/garris/BackstopJS/issues/311)
-
-   > Note: PhantomJS is outdated, use chrome-headless, firefox-headless instead 
-
-## Gemini Samples
-
-   - [Chrome - Simulate User Actions](samples/Gemini/Chrome/Gemini_SimulateUserActions)
-   - [Chrome - Simulate Devices](samples/Gemini/Chrome/Gemini_SimulateDevices)
-   - [Firefox - Simulate User Actions](samples/Gemini/Firefox/Gemini_SimulateUserActions)
-   - [Firefox - Simulate Devices](samples/Gemini/Firefox/Gemini_SimulateDevices)
-   
-   > Note: 
-   > 1. PhantomJS is outdated, use chrome-headless, firefox-headless instead 
-   > 2. Gemini is not maintained, use Hermione as instead
-   > 3. For html reporter, use **html-reporter-legacy**
-
-## Hermione Samples
-
-   - [Chrome - Simulate User Actions](samples/Hermione/Chrome/Hermione_SimulateUserActions)
-   - [Chrome - Simulate Devices](samples/Hermione/Chrome/Hermione_SimulateDevices)
-   - [Firefox - Simulate User Actions](samples/Hermione/Firefox/Hermione_SimulateUserActions)
-   - [Firefox - Simulate Devices](samples/Hermione/Firefox/Hermione_SimulateDevices)
-
-   > Note: 
-   > 1. PhantomJS is outdated, use chrome-headless, firefox-headless instead 
-   > 2. Get help from: [WebdriverIO API](https://webdriver.io/api.html), [issue-443](https://github.com/gemini-testing/hermione/issues/443), and [Chai Assert](https://www.chaijs.com/api/assert/)
 
 ## System Info
 
