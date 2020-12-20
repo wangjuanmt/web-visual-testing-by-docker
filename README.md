@@ -35,6 +35,10 @@ docker pull juanwangak/vnc-nightwatch
    2) Access the [http://localhost:6901/?password=vncpassword/](http://localhost:6901/?password=vncpassword/) to the vnc env.
    
    3) launch "terminal", run the test as bellow.
+      ```
+      selenium-standalone start
+      ```
+   launch another "terminal", run the test as bellow.
    
        ``` 
        cd /tmp;
