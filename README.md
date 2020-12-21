@@ -3,7 +3,7 @@
 Pull the docker image from: 
 
 ```
-docker pull juanwangak/vnc-nightwatch
+docker pull juanwangak/vnc-nightwatch:1.0
 ```
 
 ## Content
